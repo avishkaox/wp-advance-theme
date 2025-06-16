@@ -41,9 +41,21 @@ class Menus
     {
         // Get the menu ID by location
         $locations = get_nav_menu_locations();
-        
+
         $menu_id = $locations[$location] ?? null;
 
         return $menu_id;
+    }
+
+    public function get_child_menu_items($menu_array, $parent_id)
+    {
+        $child_menus = [];
+        if (! empty($menu_array) && is_array($menu_array)) {
+            foreach ($menu_array as $menu) {
+                if (intval($menu->menu_item_parent) == $parent_id) {
+                    $child_menus[] = $menu;
+                }
+            }
+        }
     }
 }

@@ -25,45 +25,54 @@ print_r($header_menus);
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <!-- <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
-      </ul> -->
       <?php
-      wp_nav_menu([
-        'theme_location' => 'aquila-header-menu',
-        'container_class' => 'collapse navbar-collapse',
-        'container_id' => 'navbarSupportedContent',
-        'menu_class' => 'navbar-nav me-auto mb-2 mb-lg-0',
-        'fallback_cb' => false,
-        'add_li_class' => 'nav-item',
-        'add_a_class' => 'nav-link',
-        'dropdown_class' => 'nav-item dropdown',
-        'dropdown_toggle_class' => 'nav-link dropdown-toggle',
-        'dropdown_menu_class' => 'dropdown-menu',
-        'dropdown_divider_class' => 'dropdown-divider',
-        'dropdown_item_class' => 'dropdown-item',
-      ]);
+      if (! empty($header_menus) && is_array($header_menus)) {
+      ?>
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <?php
+          foreach ($header_menus as $menu_item) {
+            if (! $menu_item->menu_item_parent) {
+              $child_menu_items = $menu_class->get_child_menu_items($header_menus, $menu_item->ID);
+              $has_children = ! empty($child_menu_items) && is_array($child_menu_items);
+
+              if (! $has_children) {
+          ?>
+                <li class="nav-item">
+                  <a class="nav-link" href="<?php echo esc_url($menu_item->url); ?>">
+                    <?php echo esc_html($menu_item->title); ?>
+                  </a>
+                </li>
+              <?php
+              } else {
+              ?>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Dropdown
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <?php
+                    foreach ($child_menu_items as $child_menu_item) {
+                    ?>
+                      <li><a class="dropdown-item" href="<?php echo esc_url($child_menu_item->url); ?>"><?php echo esc_url($child_menu_item->title); ?></a></li>
+                    <?php
+                    }
+                    ?>
+                  </ul>
+                </li>
+              <?php
+              }
+              ?>
+
+
+          <?php
+            }
+          }
+          ?>
+        </ul>
+      <?php
+      }
       ?>
       <form class="d-flex" role="search">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
