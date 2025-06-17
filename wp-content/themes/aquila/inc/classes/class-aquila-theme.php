@@ -67,7 +67,7 @@ class AQUILA_THEME
 
         global $content_width;
         if ( ! isset( $content_width ) ) {
-            $content_width = 1240; // Set a default content width
+            $content_width = 1240;
         }
     }
 }
